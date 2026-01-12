@@ -4,12 +4,45 @@
   <title>QR Attendance</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    let currentZoom = 1;
+const maxZoom = 3;
+const minZoom = 1;
+    qr.start(
+  { facingMode: "environment" },
+  {
+    fps: 10,
+    qrbox: 250,
+    advanced: [{ zoom: currentZoom }]
+  },
+  onScanSuccess
+);
+document.getElementById("zoomIn").onclick = async () => {
+  if (currentZoom < maxZoom) {
+    currentZoom += 0.5;
+    await qr.applyVideoConstraints({ zoom: currentZoom });
+  }
+};
+
+document.getElementById("zoomOut").onclick = async () => {
+  if (currentZoom > minZoom) {
+    currentZoom -= 0.5;
+    await qr.applyVideoConstraints({ zoom: currentZoom });
+  }
+};
+
+  </script>
 </head>
 
 <body class="bg-gray-100 p-6">
   <h1 class="text-3xl font-bold text-center mb-4">QR Attendance</h1>
 
   <div id="reader" class="max-w-sm mx-auto"></div>
+  <div class="flex justify-center gap-4 mt-4">
+  <button id="zoomIn" class="btn btn-primary">Zoom +</button>
+  <button id="zoomOut" class="btn btn-secondary">Zoom -</button>
+  </div>
+
 
   <div id="result" class="mt-6 max-w-sm mx-auto bg-white p-4 rounded shadow"></div>
 
