@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR Attendance</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 p-6">
+  <h1 class="text-3xl font-bold text-center mb-4">QR Attendance</h1>
+
+  <div id="reader" class="max-w-sm mx-auto"></div>
+
+  <div id="result" class="mt-6 max-w-sm mx-auto bg-white p-4 rounded shadow"></div>
+
+  <script>
+    const qr = new Html5Qrcode("reader");
+    const result = document.getElementById("result");
+
+    qr.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      async (text) => {
+        qr.stop();
+        result.innerHTML = "Processing...";
+
+        const res = await fetch("/scan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ qr: text })
+        });
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        result.innerHTML = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          result.innerHTML += `<p>${decoder.decode(value)}</p>`;
+        }
+      }
+    );
+  </script>
+</body>
+</html>
