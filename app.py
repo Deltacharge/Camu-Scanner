@@ -22,7 +22,13 @@ students = [
         "username": "e22cseu0537@bennett.edu.in",
         "password": os.getenv("SHREYA_PASS"),
         "name": "Shreya"
-    }
+    },
+    {
+        "username": "davendersethi456@gmail.com",
+        "password": os.getenv("CHIRAG_PASS"),
+        "name": "Chirag"
+    },
+    
 ]
 
 def login(username, password):
